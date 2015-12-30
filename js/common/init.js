@@ -25,8 +25,10 @@ define(['jquery'], function($){
 	 
 	// 初始化左边中间部分高度
 	function initPageHeight (){
-		$("#left-img-wrapper,#right-cont-wrapper").css("height",$(window).height()+"px");
-        $("#right-cont-wrapper").css({"margin-left":$(window).width()/2+"px"});
+        if($(window).width() > 768){
+            $("#left-img-wrapper,#right-cont-wrapper").css("height",$(window).height()+"px");
+            $("#right-cont-wrapper").css({"margin-left":$(window).width()/2+"px"});        
+        }
 	} 
         
     function isSupportHtml5(){		
