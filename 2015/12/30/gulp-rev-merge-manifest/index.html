@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+	<div id="mask-panel"></div>
+	<header id="header" class="header row clearfix">
+	<div class="logo">
+		<div class="logo-image">
+			<a href="/">
+				<img src="/image/logo/logo.png" class="image-logo" alt="logo">
+			</a>
+		</div>
+	</div><!-- logo -->
+	<a href="javascript:void(0);" id="sidebar-button"><i class="line"></i></a>	
+	
+</header>
+	<div id="left-img-wrapper">
+		<img src="/image/focus/brilliant-tree2.jpeg"> 
+		<div class="choose-menu-wrap">
+			<div class="menu-wrap">				
+				<p class="title">分类：</p>
+				<div class="menu-list">
+										
+					  
+						<a href="/categories/工作笔记/">#工作笔记</a>
+					  
+					
+				</div>
+			</div>
+			<div class="menu-wrap">				
+				<p class="title">标签：</p>
+				<div class="menu-list">
+										
+					  
+						<a href="/tags/gulp/">#gulp</a>
+					  
+					
+				</div>
+			</div>
+			<span id="close-menu-wrap"></span> 
+		</div>
+	</div>
+	<div id="right-cont-wrapper"> 	
+		
+	<div class="article">
+		<h1>gulp-rev-merge-manifest</h1>
+		<p><p>前段时间给项目打包要给图片加上版本戳</p>
+<p>使用 gulp-rev 给图片加版本号,同时会生成manifest.json,<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gulp.task(<span class="string">'revImage'</span>, <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">    <span class="built_in">return</span> gulp.src(imgSrc)</span><br><span class="line">        .pipe(rev())</span><br><span class="line">        .pipe(gulp.dest(imgDest)) </span><br><span class="line">        .pipe(rev.manifest())</span><br><span class="line">        .pipe(gulp.dest(<span class="string">'static/rev/image'</span>));	</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>再使用 gulp-rev-collector 替换manifest.json里面的图片路径<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gulp.task(<span class="string">'htmlReplacePath'</span>, <span class="function"><span class="title">function</span></span> () &#123;</span><br><span class="line">  <span class="built_in">return</span> gulp.src([<span class="string">'static/rev/**/*.json'</span>, <span class="string">'./*.html'</span>])</span><br><span class="line">    .pipe(revCollector())   </span><br><span class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>我在页面上放了三张图片 dog.jpg,ma.jpg,flow.jpg<br>先后运行 revImage,htmlReplacePath后成功打包到dist目录,预览页面看请求:<br><img src="/image/article/gulp-1.jpg" alt=""><br>我修改一张图片之后又重新打包后,看请求：<br><img src="/image/article/gulp-2.jpg" alt=""><br>仔细看全都是200状态了,这不科学吧,我只改了一张图片怎么全部图片都重新请求了<br>思索后应该是每次只打包修改过的,加上gulp-changed<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gulp.task(<span class="string">'revImage'</span>, <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">    <span class="built_in">return</span> gulp.src(imgSrc)</span><br><span class="line">        .pipe(rev())</span><br><span class="line">        .pipe(changed(imgDest)) </span><br><span class="line">        .pipe(gulp.dest(imgDest)) </span><br><span class="line">        .pipe(rev.manifest())</span><br><span class="line">        .pipe(gulp.dest(<span class="string">'static/rev/image'</span>));	</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>重新换一张图,再运行打包成功后预览:<br><img src="/image/article/gulp-3.jpg" alt=""><br>后面两张 404 了,<br>这是怎么回事？<br>想想就知道,因为只有修改过的图片被重新打包了,而且gulp-rev每次都是重新生成manifest.json,所以manifest.json里面只有一条记录,<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">manifest.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"dog.jpg"</span>: <span class="string">"dog-f690e9f49f.jpg"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>替换的时候自然只替换了dog.jpg 的图片地址</p>
+<p>找到问题了？有一种方案就是就是要让上一次的 manifest.json 保留下来能和新生成的manifest.json合并起来，这样就可能达到目的了,<br>网上也没找到合适的,于是自己动手了揉了一个 <strong>gulp-rev-merge-manifest</strong> 插件，其实很简单看全部代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'use strict'</span>;</span><br><span class="line">var Transform = require(<span class="string">'readable-stream/transform'</span>);</span><br><span class="line">var _ = require(<span class="string">"underscore"</span>);</span><br><span class="line"></span><br><span class="line">module.exports = <span class="keyword">function</span>(srcObj)&#123;</span><br><span class="line">    <span class="built_in">return</span> new Transform(&#123;</span><br><span class="line">        objectMode: <span class="literal">true</span>,</span><br><span class="line">        transform: <span class="keyword">function</span>(file, enc, callback) &#123;</span><br><span class="line">            <span class="keyword">if</span> (file.isNull()) &#123;</span><br><span class="line">                <span class="built_in">return</span> callback(null, file);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">function</span> <span class="function"><span class="title">doExtend</span></span>() &#123;</span><br><span class="line">                <span class="keyword">if</span> (file.isStream())&#123;</span><br><span class="line">                    this.emit(<span class="string">'error'</span>, new gutil.PluginError(PLUGIN_NAME, <span class="string">'Streaming not supported'</span>));</span><br><span class="line">                    <span class="built_in">return</span> callback(null, file);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(file.isBuffer())&#123; </span><br><span class="line"></span><br><span class="line">                    var chunks = String(file.contents.toString());</span><br><span class="line"></span><br><span class="line">                    file.contents = new Buffer(JSON.stringify(_.extend(JSON.parse(srcObj),JSON.parse(chunks))));</span><br><span class="line"></span><br><span class="line">                    <span class="built_in">return</span> callback(null, file);</span><br><span class="line">                &#125;</span><br><span class="line">                callback(null, file);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">do</span>Extend();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>再次修改revImage,最终gulpfile.js代码:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(<span class="string">'gulp'</span>),</span><br><span class="line">	rev = require(<span class="string">'gulp-rev'</span>),</span><br><span class="line">	changed = require(<span class="string">'gulp-changed'</span>),</span><br><span class="line">	merge = require(<span class="string">'gulp-rev-merge-manifest'</span>),</span><br><span class="line">	revCollector = require(<span class="string">'gulp-rev-collector'</span>),</span><br><span class="line">	fs = require(<span class="string">'fs'</span>),</span><br><span class="line">    imgSrc = <span class="string">'static/image/**/*.*'</span>,</span><br><span class="line">    imgDest = <span class="string">'dist/static/image/'</span>;</span><br><span class="line"></span><br><span class="line">// 图片版本戳</span><br><span class="line">gulp.task(<span class="string">'revImage'</span>, <span class="function"><span class="title">function</span></span>()&#123;	</span><br><span class="line">	fs.readFile(<span class="string">'static/rev/image/rev-manifest.json'</span>,<span class="string">'utf-8'</span>,<span class="keyword">function</span>(err,data)&#123;  		</span><br><span class="line">		var mainFest =<span class="string">"&#123;&#125;"</span>;		</span><br><span class="line">		<span class="keyword">if</span>(!err)&#123;</span><br><span class="line">			mainFest = data;			</span><br><span class="line">		&#125; 		</span><br><span class="line">		<span class="built_in">return</span> gulp.src(imgSrc)</span><br><span class="line">			.pipe(rev())</span><br><span class="line">			.pipe(changed(imgDest)) </span><br><span class="line">			.pipe(gulp.dest(imgDest))</span><br><span class="line">			.pipe(rev.manifest())</span><br><span class="line">			.pipe(merge(mainFest))</span><br><span class="line">			.pipe(gulp.dest(<span class="string">'static/rev/image'</span>));		</span><br><span class="line">	&#125;)	</span><br><span class="line">	</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// 替换</span><br><span class="line">gulp.task(<span class="string">'htmlReplacePath'</span>, <span class="function"><span class="title">function</span></span> () &#123;</span><br><span class="line">  <span class="built_in">return</span> gulp.src([<span class="string">'static/rev/**/*.json'</span>, <span class="string">'./*.html'</span>])</span><br><span class="line">    .pipe(revCollector())   </span><br><span class="line">    .pipe(gulp.dest(<span class="string">'dist'</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>网站结构：<br><img src="/image/article/gulp-4.jpg" alt=""></p>
+<p>重新换一张图,再运行打包成功后预览:<br><img src="/image/article/gulp-5.jpg" alt=""><br>再看请求,只有被修改的图片重新请求了,终于解决了这个图片加版本戳出现的问题</p>
+</p>	
+		<p>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gulp/">gulp</a></li></ul>
+</p>		
+		<p> </p>	
+	</div>
+
+	</div>
+</body>
+</html>
+<script type="text/javascript" src="/js/lib/require/require.js" data-main="/js/app/index/main.js"></script>
