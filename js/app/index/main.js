@@ -1,0 +1,3 @@
+define(["init"],function(init){    
+    
+})
