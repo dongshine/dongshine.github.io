@@ -223,8 +223,8 @@ figure{
 	left:20%;
     top:20%;
 	overflow: hidden;	
-	transform: scale(0,0);
-	-webkit-transform: scale(0,0);
+	transform: scale(0);
+	-webkit-transform: scale(0); 
 	background: rgba(0,0,0,.5); 	 
 }
 .showMenu{	
@@ -318,6 +318,7 @@ figure{
 		margin-left: 0;
 	}
 	#right-cont-wrapper{
+		padding:0 20px;
 		width: 100%;
 	}
 	#right-cont-wrapper img{
