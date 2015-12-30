@@ -224,7 +224,8 @@ figure{
     top:20%;
 	overflow: hidden;	
 	transform: scale(0,0);
-	background: rgba(0,0,0,.5);	
+	-webkit-transform: scale(0,0);
+	background: rgba(0,0,0,.5); 	 
 }
 .showMenu{	
 	-webkit-animation:mymove 0.5s forwards;	
@@ -234,9 +235,11 @@ figure{
 {
 	from {
 		transform: scale(0,0);
+		-webkit-transform: scale(0,0);
 	}
 	to {
 		transform: scale(1,1);
+		-webkit-transform: scale(1,1);
 	}
 }
 
@@ -244,9 +247,11 @@ figure{
 {
 	from {
 		transform: scale(0,0);
+		-webkit-transform: scale(0,0);
 	}
 	to {
 		transform: scale(1,1);
+		-webkit-transform: scale(1,1);
 	}
 }
 
