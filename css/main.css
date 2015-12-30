@@ -228,6 +228,7 @@ figure{
 	background: rgba(0,0,0,.5); 	 
 }
 .showMenu{	
+	animation:mymove 0.5s forwards;	
 	-webkit-animation:mymove 0.5s forwards;	
 }
 
