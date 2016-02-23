@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="/css/main.css">
+    <title>windows下搭建 React Native 项目踩坑记 dongshine's Blog</title>
+    <meta name="keywords" content=" gulpreact-native "/>
+</head>
+<body>
+	<div id="mask-panel"></div>
+	<header id="header" class="header row clearfix">
+	<div class="logo">
+		<div class="logo-image">
+			<a href="/">
+				<img src="/image/logo/logo.png" class="image-logo" alt="logo">
+			</a>
+		</div>
+	</div><!-- logo -->
+	<a href="javascript:void(0);" id="sidebar-button"><i class="line"></i></a>	
+	
+</header>
+	<div id="left-img-wrapper">
+		<img src="/image/focus/brilliant-tree2.jpeg"> 
+		<div class="choose-menu-wrap">
+			<div class="menu-wrap">				
+				<p class="title">分类：</p>
+				<div class="menu-list">
+										
+					  
+						<a href="/categories/工作笔记/">#工作笔记</a>
+					  
+					
+				</div>
+			</div>
+			<div class="menu-wrap">				
+				<p class="title">标签：</p>
+				<div class="menu-list">
+										
+					  
+						<a href="/tags/gulp/">#gulp</a>
+					  
+						<a href="/tags/react-native/">#react-native</a>
+					  
+					
+				</div>
+			</div>
+			<span id="close-menu-wrap"></span> 
+		</div>
+	</div>
+	<div id="right-cont-wrapper"> 	
+		
+	<div class="article">
+		<h1>windows下搭建 React Native 项目踩坑记</h1>
+		<p><p>现在混合开发APP很火热,尤其是Facebook 的React Native一出，星直接往上冒！作为技术爱好者怎么也得尝鲜，前段时间又刚好使用了Cordova开发了安卓APP<br>想想何不试试 React Native 也来搞一个，想也不想直接开始了</p>
+<p>首先当然是搭环境</p>
+<p>由于之前开发过Cordova 什么android sdk 环境变量等等都不用管了 现成的！<br>看了看文档至少得 nodejs4.1以上 开始升级吧 直接来简单粗暴的 官网下载安装覆盖原安装目录</p>
+<p>安装react-native命令行工具<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g react-native-cli</span><br></pre></td></tr></table></figure></p>
+<p>成功后再运行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">react-native init MyProject</span><br></pre></td></tr></table></figure></p>
+<p>慢慢等吧…….等了20多分钟了不行， 不等了 </p>
+<p>幸好有个论坛有现成的选择一个<a href="http://bbs.reactnative.cn/topic/11/react-native%E4%B8%AD%E6%96%87%E7%BD%91%E5%AE%98%E6%96%B9%E5%8F%91%E5%B8%83%E5%AE%8C%E6%95%B4%E6%96%B0%E9%A1%B9%E7%9B%AE%E5%8C%85-%E6%97%A0%E9%9C%80init%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8C" target="_blank" rel="external">下载</a>解压到目录</p>
+<p>之前先通过USB连接数据线打开调试模式(最好电脑上只连接了一个设备，避免不必要的错误)，方便等下 react-native 安装到真机上测试，<br>通过如下命令查看是有连接成功：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb devices</span><br></pre></td></tr></table></figure></p>
+<p>这样就代表成功了<br><img src="/image/article-image/devices.jpg" alt=""></p>
+<p>接下来新打开一个cmd窗口：</p>
+<p>1.进入目录启动服务：react-native start<br><img src="/image/article-image/native-server.jpg" alt=""><br>然后在浏览器查看：<br><a href="http://localhost:8081/index.android.bundle?platform=android" target="_blank" rel="external">http://localhost:8081/index.android.bundle?platform=android</a><br>显示如下就代表服务成功启动了<br><img src="/image/article-image/native-server-02.jpg" alt=""></p>
+<p>2.进入目录 cd MyProject<br>运行 react-native run-android</p>
+<p>出错了：<br><img src="/image/article-image/android-version-err.png" alt=""><br>大体意思是 不能找到全部的依赖<br>还有 API 23.0.1 没找到<br>打开SDK Manager.exe 安装 api 有 23.<em>.</em>的都最好勾上 还有下面的 Extras<br>这是我安装后的：<br><img src="/image/article-image/sdk-view.jpg" alt=""></p>
+<p>再次运行 react-native run-android 慢慢的等待等待再等待……<br><img src="/image/article-image/success-build-before.jpg" alt=""><br>几分钟成功了：<br><img src="/image/article-image/success-build.jpg" alt=""><br>查看手机上应安装了该APP<br>打开 app 第一次报错<br><img src="/image/article-image/app-first-err.jpg" alt=""><br>这时摇一摇手机，点击Dev Settings后<br>再点击Debug server host &amp; port for device设置IP和端口<br>IP是电脑的IP 端口固定8081 确定<br>设置完成后，回到空白页面，再次摇一摇手机，选择Reload JS，程序就运行起来，<br>出现Welcome to React Native！<br><img src="/image/article-image/app-weclone.jpg" alt=""></p>
+</p>	
+		<p>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-native/">react-native</a></li></ul>
+</p>		
+		<p>
+<nav id="article-nav">
+  
+  
+    <a href="/2015/12/30/gulp-rev-merge-manifest/" id="article-nav-older" class="article-nav-link-wrap">
+      gulp-rev-merge-manifest &gt;
+    </a>
+  
+</nav>
+ </p>	
+	</div>
+
+	</div>
+</body>
+</html>
+<script type="text/javascript" src="/js/lib/require/require.js" data-main="/js/app/index/main.js"></script>
